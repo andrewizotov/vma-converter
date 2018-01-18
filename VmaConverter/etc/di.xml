@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="vma_products_send"   xsi:type="object">Vma\VmaConverter\Console\Command\VmaProductsSend</item>
+                <item name="vma_categories_send" xsi:type="object">Vma\VmaConverter\Console\Command\VmaCategoriesSend</item>
+                <item name="vma_orders_send"     xsi:type="object">Vma\VmaConverter\Console\Command\VmaOrdersSend</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Vma\VmaConverter\Helper\Entity\ProductHelper">
+        <arguments>
+            <argument name="objectManager" xsi:type="object">Magento\Framework\ObjectManagerInterface</argument>
+            <argument name="baseImageAttribute" xsi:type="object">Magento\Catalog\Model\Product\Attribute\Frontend\Image</argument>
+        </arguments>
+    </type>
+
+    <type name="Vma\VmaConverter\Helper\Entity\CategoryHelper">
+        <arguments>
+            <argument name="objectManager" xsi:type="object">Magento\Framework\ObjectManagerInterface</argument>
+        </arguments>
+    </type>
+
+    <type name="Vma\VmaConverter\Helper\Entity\OrderHelper">
+        <arguments>
+            <argument name="objectManager" xsi:type="object">Magento\Framework\ObjectManagerInterface</argument>
+        </arguments>
+    </type>
+
+    <type name="Vma\VmaConverter\Helper\Data">
+        <arguments>
+            <argument name="objectManager"  xsi:type="object">Magento\Framework\ObjectManagerInterface</argument>
+            <argument name="productHelper"  xsi:type="object">Vma\VmaConverter\Helper\Entity\ProductHelper</argument>
+            <argument name="categoryHelper" xsi:type="object">Vma\VmaConverter\Helper\Entity\CategoryHelper</argument>
+            <argument name="orderHelper"    xsi:type="object">Vma\VmaConverter\Helper\Entity\OrderHelper</argument>
+        </arguments>
+    </type>
+
+    <type name="Vma\VmaConverter\Model\Converter\Product">
+        <arguments>
+            <argument name="objectManager" xsi:type="object">Magento\Framework\ObjectManagerInterface</argument>
+            <argument name="productHelper" xsi:type="object">Vma\VmaConverter\Helper\Entity\ProductHelper</argument>
+            <argument name="helper" xsi:type="object">Vma\VmaConverter\Helper\Data</argument>
+            <argument name="storeManager" xsi:type="object">\Magento\Store\Model\StoreManagerInterface</argument>
+            <argument name="config" xsi:type="object">Magento\Catalog\Model\Config</argument>
+        </arguments>
+    </type>
+
+    <type name="Vma\VmaConverter\Model\Converter\Category">
+        <arguments>
+            <argument name="objectManager" xsi:type="object">Magento\Framework\ObjectManagerInterface</argument>
+            <argument name="categoryHelper" xsi:type="object">Vma\VmaConverter\Helper\Entity\CategoryHelper</argument>
+            <argument name="helper" xsi:type="object">Vma\VmaConverter\Helper\Data</argument>
+            <argument name="storeManager" xsi:type="object">\Magento\Store\Model\StoreManagerInterface</argument>
+            <argument name="config" xsi:type="object">Magento\Catalog\Model\Config</argument>
+        </arguments>
+    </type>
+
+    <type name="Vma\VmaConverter\Model\Converter\Order">
+        <arguments>
+            <argument name="objectManager" xsi:type="object">Magento\Framework\ObjectManagerInterface</argument>
+            <argument name="orderHelper" xsi:type="object">Vma\VmaConverter\Helper\Entity\OrderHelper</argument>
+            <argument name="helper" xsi:type="object">Vma\VmaConverter\Helper\Data</argument>
+        </arguments>
+    </type>
+
+    <type name="Vma\VmaConverter\API\Client">
+        <arguments>
+            <argument name="jsonHelper" xsi:type="object">Magento\Framework\Json\Helper\Data</argument>
+        </arguments>
+    </type>
+
+    <type name="Vma\VmaConverter\Console\Command\VmaProductsSend">
+        <arguments>
+            <argument name="objectManager" xsi:type="object">Magento\Framework\ObjectManagerInterface</argument>
+            <argument name="productConverter" xsi:type="object">Vma\VmaConverter\Model\Converter\Product</argument>
+            <argument name="apiClient" xsi:type="object">Vma\VmaConverter\API\Client</argument>
+        </arguments>
+    </type>
+
+    <type name="Vma\VmaConverter\Console\Command\VmaCategoriesSend">
+        <arguments>
+            <argument name="objectManager" xsi:type="object">Magento\Framework\ObjectManagerInterface</argument>
+            <argument name="categoryConverter" xsi:type="object">Vma\VmaConverter\Model\Converter\Category</argument>
+            <argument name="apiClient" xsi:type="object">Vma\VmaConverter\API\Client</argument>
+        </arguments>
+    </type>
+
+    <type name="Vma\VmaConverter\Console\Command\VmaOrdersSend">
+        <arguments>
+            <argument name="objectManager" xsi:type="object">Magento\Framework\ObjectManagerInterface</argument>
+            <argument name="orderConverter" xsi:type="object">Vma\VmaConverter\Model\Converter\Order</argument>
+            <argument name="apiClient" xsi:type="object">Vma\VmaConverter\API\Client</argument>
+        </arguments>
+    </type>
+</config>
