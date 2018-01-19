@@ -70,6 +70,7 @@
     <type name="Vma\VmaConverter\API\Client">
         <arguments>
             <argument name="jsonHelper" xsi:type="object">Magento\Framework\Json\Helper\Data</argument>
+            <argument name="logger"     xsi:type="object">Magento\Framework\Logger\Monolog</argument>
         </arguments>
     </type>
 
@@ -93,6 +94,14 @@
         <arguments>
             <argument name="objectManager" xsi:type="object">Magento\Framework\ObjectManagerInterface</argument>
             <argument name="orderConverter" xsi:type="object">Vma\VmaConverter\Model\Converter\Order</argument>
+            <argument name="apiClient" xsi:type="object">Vma\VmaConverter\API\Client</argument>
+        </arguments>
+    </type>
+
+    <type name="Vma\VmaConverter\Observer\Product">
+        <arguments>
+            <argument name="scopeConfig" xsi:type="object">Magento\Framework\App\Config\ScopeConfigInterface</argument>
+            <argument name="productConverter" xsi:type="object">Vma\VmaConverter\Model\Converter\Product</argument>
             <argument name="apiClient" xsi:type="object">Vma\VmaConverter\API\Client</argument>
         </arguments>
     </type>

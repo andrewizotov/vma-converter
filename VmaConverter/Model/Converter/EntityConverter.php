@@ -9,7 +9,9 @@ class EntityConverter
 {
 
     const RANGE_STEP = 100;
-
+    const LAST_ENTITY_FIELD =  'VOID';
+    const PRIMARY_ID = 'VOID';
+    const VMA_LAST_ENTITY_TABLE = 'vma_last_entities';
     /**
      * @var QueryGenerator
      */
@@ -38,6 +40,17 @@ class EntityConverter
         $this->connection = $resource->getConnection();
         $this->queryGenerator =  \Magento\Framework\App\ObjectManager::getInstance()
             ->get(QueryGenerator::class);
+    }
+
+
+    public static function getLastEntityField()
+    {
+        return self::LAST_ENTITY_FIELD;
+    }
+
+
+    public static function getFieldForLastEntity() {
+        return static::getLastEntityField();
     }
 
     /**
@@ -70,5 +83,28 @@ class EntityConverter
         }
 
         return $queries;
+    }
+
+    public  static function getPrimaryField()
+    {
+         return static::getEntityPrimaryField();
+    }
+
+    protected function saveLastEntityId($lastEntityId)
+    {
+        if(!empty($lastEntityId[static::getPrimaryField()])) {
+            $this->connection->update(self::VMA_LAST_ENTITY_TABLE, [static::getFieldForLastEntity()=>$lastEntityId[static::getPrimaryField()]]);
+        }
+    }
+
+
+    protected function getLastProcessedEntityId()
+    {
+        $lastUpdatedEntity = $this->connection
+            ->select()
+            ->from(self::VMA_LAST_ENTITY_TABLE, static::getFieldForLastEntity());
+
+        $lastUpdatedEntityId = $this->connection->query($lastUpdatedEntity)->fetchColumn(0);
+        return (int)$lastUpdatedEntityId;
     }
 }

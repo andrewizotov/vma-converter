@@ -40,10 +40,7 @@ class Data
             $productsToIndex[$productId] = $this->productHelper->getObject($product);
         }
 
-        return [
-            'toIndex' => $productsToIndex,
-            'toRemove' => array()
-        ];
+        return $productsToIndex;
     }
 
     public function getCategoriesRecords($collection)
@@ -59,10 +56,7 @@ class Data
             $categoriesToIndex[$categoryId] = $this->categoryHelper->getObject($category);
         }
 
-        return [
-            'toIndex' => $categoriesToIndex,
-            'toRemove'=> array()
-        ];
+        return $categoriesToIndex;
     }
 
 

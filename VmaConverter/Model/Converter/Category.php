@@ -12,7 +12,6 @@ use Vma\VmaConverter\API\Client;
  */
 class Category  extends EntityConverter
 {
-
     /**
      * @var CategoryHelper
      */
@@ -21,6 +20,8 @@ class Category  extends EntityConverter
     protected $config;
     protected $objectMaganer;
     protected $apiClient;
+    const LAST_ENTITY_FIELD = 'category_last';
+    const PRIMARY_ID = 'collection_id';
 
     const RANGE_STEP = 50;
 
@@ -48,6 +49,17 @@ class Category  extends EntityConverter
     }
 
 
+    public static function getLastEntityField()
+    {
+        return self::LAST_ENTITY_FIELD;
+    }
+
+    public static function getEntityPrimaryField()
+    {
+        return self::PRIMARY_ID;
+    }
+
+
     public function executeAll()
     {
         $selects = $this->prepareSelectsByRange(
@@ -56,12 +68,23 @@ class Category  extends EntityConverter
             self::RANGE_STEP
         );
 
+        $lastProcessedId = $this->getLastProcessedEntityId();
+
         foreach ($selects as $select) {
             $res = $this->connection->query($select->__toString());
+
             $categoryIds = $res->fetchAll(\Zend_Db::FETCH_COLUMN, 0);
+
+            $lastInPack = end($categoryIds);
+
+            if($lastInPack < $lastProcessedId) {
+                continue;
+            }
+
             if(count($categoryIds) > 0) {
                 $collection = $this->categoryHelper->getCategoryCollectionQuery($categoryIds);
                 $records = $this->helper->getCategoriesRecords($collection);
+                $this->saveLastEntityId(end($records));
                 $this->apiClient->send($records);
             }
         }
@@ -75,5 +98,4 @@ class Category  extends EntityConverter
 
         return $this->categoriesSelects[] = $select;
     }
-
 }
